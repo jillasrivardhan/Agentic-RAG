@@ -5,7 +5,11 @@ langchain-community
 langchain-groq
 langchain-text-splitters
 langchain-ollama
-
+langchain-chroma 
+chromadb   
 
 streamlit
 python-dotenv
+pypdf
+
+ipykernel
