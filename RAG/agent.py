@@ -44,4 +44,48 @@ vector_store = Chroma.from_documents(
 
 similar = vector_store.similarity_search("What is the difference between a language model and a large language model?", k=3)
 
-print(similar[0].page_content)
+#---------------------------------------------------------
+# Custom Tool
+#---------------------------------------------------------
+
+@tool
+def retrieve_answer(query):
+    """Retrieves the answer to a query from the vector store."""
+    similar_docs = vector_store.similarity_search(query, k=3)
+    for doc in similar_docs:
+        return doc.page_content
+
+#---------------------------------------------------------
+# Memory Saver
+#---------------------------------------------------------
+
+memory = InMemorySaver()
+
+#---------------------------------------------------------
+# LLm Model
+#---------------------------------------------------------
+
+llm = ChatGroq(
+   model = "openai/gpt-oss-120b",
+   temperature = 0.7,
+)
+
+#---------------------------------------------------------
+# Agent Creation
+#---------------------------------------------------------
+
+agent = create_agent(
+   model = llm,
+   tools = [retrieve_answer],
+   checkpointer = memory,
+   system_prompt = "You are a helpful assistant that retrieves information from a PDF document to answer questions by calling the retrieve_answer tool.",
+)
+
+while True:
+      user_input = input("User: ")
+      if user_input.lower() in ["exit", "quit"]:
+         break
+      response = agent.invoke({"messages": [{"role": "user", "content": user_input}]},
+             {"configurable": {"thread_id": "user-123"}}
+              )
+      print(f"Agent: {response}")
