@@ -57,6 +57,9 @@ Agentic-RAG/
 │   └── LLM.pdf                 # Example source document
 ├── notebooks/
 │   └── test.ipynb              # End-to-end experimentation notebook
+├── RAG /
+     └── agent.py # testing the application with groq llms
+     └── main.py  # main application with ui           
 ├── src/
 │   └── agentic_rag/
 │       └── __init__.py
